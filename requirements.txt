@@ -1,0 +1,39 @@
+# for nlp
+torch
+transformers
+InstructorEmbedding
+sentence-transformers
+faiss-cpu
+huggingface_hub
+langchain==0.0.267
+chromadb==0.4.6
+llama-cpp-python
+protobuf==3.20.2; sys_platform != 'darwin'
+protobuf==3.20.2; sys_platform == 'darwin' and platform_machine != 'arm64'
+protobuf==3.20.3; sys_platform == 'darwin' and platform_machine == 'arm64'
+auto-gptq==0.2.2
+
+# for file Laoding
+docx2txt
+pdfminer.six==20221105
+unstructured
+unstructured[pdf]
+
+
+
+urllib3==1.26.6
+accelerate
+bitsandbytes ; sys_platform != 'win32'
+bitsandbytes-windows ; sys_platform == 'win32'
+click
+flask
+requests
+
+# Streamlit related
+streamlit
+Streamlit-extras
+
+# Excel File Manipulation
+openpyxl
+
+-e .
