@@ -1,5 +1,0 @@
-pipeline_config:
-  pipeline_name: localGPT_pipeline
-  artifact_dir: artifact
-
-  

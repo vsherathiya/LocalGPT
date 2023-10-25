@@ -1,8 +1,10 @@
+
 from setuptools import setup
 import setuptools
 
 with open('README.md', 'r', encoding='utf8-') as f:
     long_description = f.read()
+
 
 __version = '0.0.0'
 
@@ -16,7 +18,7 @@ setup(
     version=__version,
     author=AUTHOR_USER_NAME,
     author_email=AUTHOR_EMAIL,
-    description='A Machine Learning model to predict if a chicken has diseased or not',
+    description='Local ChatGPT',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url=f'https://github.com/{AUTHOR_USER_NAME}/{REPO_NAME}',

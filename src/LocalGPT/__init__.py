@@ -2,55 +2,41 @@
 # ==========================================Exception=================================
 # ====================================================================================
 
-
 from datetime import datetime
-import logging
-import os
 import sys
+import os
 
+import logging
 
-def error_message_detail(error, error_detail: sys):
+import traceback
+
+def error_message_detail(error):
     """
-    It returns the error message with the file name, try block line number, exception block line number
-    and the error message
+    Construct an error message with detailed information about the error.
 
     :param error: The error message that was raised
-    :param error_detail: sys
-    :type error_detail: sys
-    :return: The error message
+    :type error: Exception
+    :return: The formatted error message
     """
-
-    _, _, exc_tb = error_detail.exc_info()
-    file_name = exc_tb.tb_frame.f_code.co_filename
-    try_block_line_no = exc_tb.tb_lineno
-    Exception_block_line_no = exc_tb.tb_frame.f_lineno
-    error_message = f"""Python Script :
-    [{file_name}] 
-    at try block line number : [{try_block_line_no}] and exception block line no : [{Exception_block_line_no}] 
-    error message : 
-    [{str(error)}]
-    """
+    exc_type, exc_value, exc_traceback = sys.exc_info()
+    error_message = f"""Error Type: {exc_type.__name__}
+                File: {exc_traceback.tb_frame.f_code.co_filename}
+                Line (Try Block): {exc_traceback.tb_lineno}
+                Line (Exception Block): {exc_traceback.tb_frame.f_lineno}
+                Error Message: {str(error)}
+                """
     return error_message
 
-
 class CustomException(Exception):
-    def __init__(self, error_message, error_detail: sys):
-        """
-        A constructor function that initializes the class.
-
-        :param error_message: The error message that will be displayed to the user
-        :param error_detail: This is the error message that you want to display
-        :type error_detail: sys
-        """
+    def __init__(self, error_message):
         super().__init__(error_message)
-        self.error_message = error_message_detail(
-            error_message, error_detail=error_detail)
+        self.error_message = error_message  # You don't need to use error_message_detail here
 
     def __str__(self):
         return self.error_message
 
-    def __repr__(self) -> str:
-        return CustomException.__name__.str()
+    def __repr__(self):
+        return f"{self.__class__.__name__}('{self.error_message}')"
 
 # =============================================================================
 # =======================================logger================================
