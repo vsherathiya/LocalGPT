@@ -8,7 +8,7 @@ from langchain.embeddings import HuggingFaceInstructEmbeddings
 from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
 from LocalGPT.constants import (
-    CHROMA_SETTINGS,
+
     DOCUMENT_MAP,
     EMBEDDING_MODEL_NAME,
     INGEST_THREADS,
@@ -27,19 +27,13 @@ class DocumentProcessor:
         self.device_type = device_type
         self.logger = logger
 
-    
-
-    
-
     def load_single_document(self, file_path):
         try:
             file_extension = os.path.splitext(file_path)[1]
             loader_class = DOCUMENT_MAP.get(file_extension)
             if loader_class:
-                # self.file_log(f"{file_path} loaded.")
                 loader = loader_class(file_path)
             else:
-                # self.file_log(f"{file_path} document type is undefined.")
                 raise ValueError("Document type is undefined")
             return loader.load()[0]
         except Exception as ex:
@@ -51,7 +45,7 @@ class DocumentProcessor:
         with ThreadPoolExecutor(len(filepaths)) as exe:
             futures = [exe.submit(self.load_single_document, name) for name in filepaths]
             if futures is None:
-                self.file_log(f"{name} failed to submit")
+                self.file_log(f"{futures} failed to submit")
                 return None
             else:
                 data_list = [future.result() for future in futures]
@@ -73,7 +67,6 @@ class DocumentProcessor:
 
         with ProcessPoolExecutor(n_workers) as executor:
             futures = []
-
             for i in range(0, len(paths), chunksize):
                 filepaths = paths[i: (i + chunksize)]
                 try:
@@ -96,27 +89,19 @@ class DocumentProcessor:
         return docs
 
     def split_documents(self, documents):
-        text_docs, python_docs = [], []
+        text_docs = []
         for doc in documents:
             if doc is not None:
-                file_extension = os.path.splitext(doc.metadata["source"])[1]
-                if file_extension == ".py":
-                    python_docs.append(doc)
-                else:
-                    text_docs.append(doc)
-        return text_docs, python_docs
+                text_docs.append(doc)
+        return text_docs
 
     def process_documents(self):
         documents = self.load_documents()
         text_documents, python_documents = self.split_documents(documents)
 
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-        python_splitter = RecursiveCharacterTextSplitter.from_language(
-            language=Language.PYTHON, chunk_size=880, chunk_overlap=200
-        )
-
+        
         texts = text_splitter.split_documents(text_documents)
-        texts.extend(python_splitter.split_documents(python_documents))
 
         self.logger.info(f"Loaded {len(documents)} documents from {self.source_directory}")
         self.logger.info(f"Split into {len(texts)} chunks of text")
